@@ -1,15 +1,20 @@
 <template>
   <div class="w-1/2 mx-auto my-20 text-center	shadow-xl rounded-lg bg-white-500 shadow-lg shadow-purple-500/50" >
-    <h1 class="font-mono text-3xl">Make your Drink</h1>
-  <select v-model="selected"  class="w-1/2 h-10 mx-auto my-20 shadow-xl font-mono text-white rounded bg-purple-500 px-4 font-semibold shadow-purple-300/50 hover:bg-purple-400 outline-none active:outline-none focus:outline-none">
+    <h1 class="font-mono text-3xl my-5 ">Make your Drink</h1>
+    <p class="font-mono ">Busque uma bebida</p>
+  <input v-model="search" placeholder="Digite uma bebida" class="w-1/2 h-10 mx-auto  my-5  shadow-xl font-mono rounded bg-gray-300 px-4 font-semibold shadow-purple-380/50 hover:bg-gray-100 outline-none active:outline-none focus:outline-none">
+  </input>
+    <p class="font-mono ">Ou escolha uma categoria</p>
+  <select v-model="selected"  class="w-1/2 h-10 mx-auto my-2 shadow-xl font-mono  rounded bg-gray-300 px-4 font-semibold shadow-purple-380/50 hover:bg-gray-100 outline-none active:outline-none focus:outline-none">
     <option disabled value="" >Escolha um item</option>
     <option>Frozen Drink</option>
     <option>Hot Drink</option>
     <option>Short Drink</option>
     <option>Long Drink</option>
   </select>
-  <tr v-for="filteredDrink in filteredDrinks" v-bind:key='filteredDrink.id'>
-    <td class="w-1/5 h-10 mx-auto my-auto content-center font-mono "><button @click="toggleModal = !toggleModal && filteredDrink ">{{filteredDrink.name}}</button> </td>
+  <p class="my-5"></p>
+  <tr class="bg-gray-100 h-10 mx-auto my-auto " v-for="filteredDrink in filteredDrinks" v-bind:key='filteredDrink.id'>
+    <td class="w-1/5 content-center font-mono "><button @click="toggleModal = !toggleModal && filteredDrink ">{{filteredDrink.name}}</button> </td>
   </tr>
   <div>
     <div>
@@ -49,6 +54,7 @@ interface Drink {
 export default Vue.extend({
   data(){
     return {
+      search:"",
       selected: null,
       listDrinks: [],
       toggleModal: false
@@ -60,6 +66,15 @@ export default Vue.extend({
   computed: {
     filteredDrinks() {
     let filterDrinks: any = [];
+      if(this.search){
+        filterDrinks = this.listDrinks.filter((filterDrink: any) => {
+      return (
+        filterDrink.name.toLowerCase().indexOf(this.search.toLowerCase()) > - 1 )
+    })
+
+    return filterDrinks
+      }
+  
     filterDrinks = this.listDrinks.filter((filterDrink: any) => {
       if(this.selected === null){return filterDrink }
       return (
@@ -67,7 +82,7 @@ export default Vue.extend({
       )
     })
     return filterDrinks
-   }
+   },
   },
   methods: {
     async generateListDrinks(): Promise<void> {
@@ -77,6 +92,10 @@ export default Vue.extend({
        this.listDrinks = response.data;
       })
     },
+    clearFilter() {
+      this.search = ""
+      this.selected = null
+    }
   },
 })
 </script>
