@@ -1,28 +1,38 @@
 <template>
-  <div class="w-1/2 mx-auto my-20 shadow-xl bg-white rounded-lg" >
-  <select v-model="selected">
-    <option disabled value="">Escolha um item</option>
+  <div class="w-1/2 mx-auto my-20 text-center	shadow-xl rounded-lg bg-white-500 shadow-lg shadow-purple-500/50" >
+    <h1 class="font-mono text-3xl">Make your Drink</h1>
+  <select v-model="selected"  class="w-1/2 h-10 mx-auto my-20 shadow-xl font-mono text-white rounded bg-purple-500 px-4 font-semibold shadow-purple-300/50 hover:bg-purple-400 outline-none active:outline-none focus:outline-none">
+    <option disabled value="" >Escolha um item</option>
     <option>Frozen Drink</option>
     <option>Hot Drink</option>
     <option>Short Drink</option>
     <option>Long Drink</option>
   </select>
-  <br>
-  <span>Selecionado: {{ filteredDrinks }}</span>
-  <!-- <button 
-  class="bg-red-500 p-3 text-white"
-  v-on:click="filteredDrinks()"
-  > 
-  Pesquisar
-  </button> -->
-
-  <!-- <ul v-for="drink in filteredDrinks" :key="drink.category">
-  <li >
-    {{ filteredDrinks }}
-  </li>
-</ul>
- </div> -->
- 
+  <tr v-for="filteredDrink in filteredDrinks" v-bind:key='filteredDrink.id'>
+    <td class="w-1/5 h-10 mx-auto my-auto content-center font-mono "><button @click="toggleModal = !toggleModal && filteredDrink ">{{filteredDrink.name}}</button> </td>
+  </tr>
+  <div>
+    <div>
+      <div
+       class="fixed overflow-x-hidden overflow-y-auto inset-0 flex justify-center items-center z-50"
+       v-if="toggleModal"
+       >
+        <div class="relative mx-auto w-auto max-w-2xl px-6">
+          <div class="bg-white w-full rounded shadow-2xl flex flex-col">
+            <div class="text-2xl font-mono"> {{toggleModal.name}}
+          </div>
+           
+            <span cass="px-14 text-2xl font-mono"> {{toggleModal.description}} </span>
+             <button
+             class="rounded font-mono bg-purple-500 text-white px-6 mt-1 py-2 w=3/12 m-auto mb-3 " @click="toggleModal =false"
+            > Voltar </button>
+            </div>
+         </div>
+        </div>
+      </div>
+    <div v-if="toggleModal" class="absolute z-40 inset-0 opacity-25 bg-gray-500"></div>
+ </div>
+</div>
 </template>
 
 <script lang="ts">
@@ -39,14 +49,9 @@ interface Drink {
 export default Vue.extend({
   data(){
     return {
-      drink: {
-      name: null,
-      category:null,
-      description:null,
-      image:null,
-      },
       selected: null,
       listDrinks: [],
+      toggleModal: false
     }
   },
   mounted(){
@@ -54,15 +59,14 @@ export default Vue.extend({
   },
   computed: {
     filteredDrinks() {
-    let filterDrinks = [];
-    filterDrinks = this.listDrinks.filter((filterDrink) => {
+    let filterDrinks: any = [];
+    filterDrinks = this.listDrinks.filter((filterDrink: any) => {
       if(this.selected === null){return filterDrink }
       return (
         filterDrink.category === this.selected
       )
     })
-    const name = filterDrinks.map((i)=> i.name)
-    return name
+    return filterDrinks
    }
   },
   methods: {
